@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>voice regonizer</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <script src="https://kit.fontawesome.com/10c03bb114.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>passing data from front end to database</h1>
+    <form class="container" method="post" action="/">
+     <div class="form-group">
+      <input class="form-control" name="title">
+     </div>
+     <div class="form-group">
+        
+      <input class="form-control" name="content" id="voicedata" >  
+    
+     </div>
+    
+     <button onclick="voicerecoder()" type="button" style="height: 40px; width:40px; border-radius: 5px;margin-top: 5px; ">  <i class="fa-solid fa-microphone " ></i></button>
+     <button>submit</button>
+    </form>
+   
+   
+   </body>
+   <script>
+    let voicerecoder = () => {
+     var recognition = new webkitSpeechRecognition();
+     recognition.lang = "en-GB"
+     recognition.onresult = function (event) {
+      console.log(event.results[0][0].transcript);
+      document.getElementById('voicedata').value = document.getElementById('voicedata').value + event.results[0][0].transcript;
+      postData();
+     }
+     recognition.start();
+    }
+   
+    const postData = () => {
+   
+     fetch('/post', {
+      method: 'POST',
+      headers: {
+       'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title: "speech", content: document.getElementById("voicedata").value })
+     });
+    }
+   </script>
+
+</html>
